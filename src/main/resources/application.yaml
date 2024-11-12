@@ -1,7 +1,7 @@
 spring:
   mvc:
     servlet:
-      path: "/user-service"
+      path: "/url-shortener-service"
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -31,11 +31,3 @@ server:
 logging:
   level:
     root: info
-
-project-service:
-  host: localhost
-  port: 8082
-
-payment-service:
-  host: localhost
-  port: 9080
