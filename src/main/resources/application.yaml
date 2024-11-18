@@ -1,0 +1,58 @@
+spring:
+  mvc:
+    servlet:
+      path: "/url-shortener-service"
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+url-shortener-service:
+  config:
+    short-urls:
+      free:
+        db:
+          max-size: 10000
+          limit: 2000
+          scheduler-cron: "0 0 0,6,12,18 * * ?" # 4 раза в день
+        redis:
+          max-size: 1000
+          limit: 200
+          pool-key: free-short-urls
+          locker-key: lock-add-short-urls
+          second-timeout: 30
+          scheduler-cron: "0 */10 * * * ?" # Раз в 10 минут
+        local:
+          max-size: 100
+          limit: 20
+          scheduler-cron: "0 * * * * ?" # Раз в минуту
+      registered:
+        db:
+          archive:
+            scheduler-cron: "0 0 0 * * ?"
+        redis:
+          minutes-of-life: 720
+server:
+  port: 8096
+
+logging:
+  level:
+    root: info
